@@ -5,6 +5,7 @@ const path = require("path");
 const os = require("os");
 const { EDClient } = require("ensembledata");  // <-- ensembledata도 require
 const ExcelJS = require("exceljs");
+const { error } = require("console");
 
 
 // 프로그램 창 설정
@@ -27,22 +28,20 @@ const client = new EDClient({ token: process.env.API_TOKEN });
 
 // SNS 데이터 가져오기 요청 처리
 ipcMain.handle("fetch-data", async (_, sns) => {
-    console.log("fetch-data", sns);
+    console.log("Data for : ", sns);
 
-    const result = await client.tiktok.fullKeywordSearch({
-        keyword: "St. Ives",
-        country: "US",
-        period: 0, //주어진 기간보다 최근 게시물 = "0", "1", "7", "30", "90", "180" (일)
-        sorting: 0, // 0: 관련성, 1: 좋아요순
-        matchExactly: false, // 정확히 일치하는 게시물만 가져오기 (true/false)
-    });
-
-    if (result.error) {
-        console.log("Error");
-        return result.error;
+    switch (sns) {
+        case "TikTok":
+            const { saveTiktokData } = require("./tiktok.js");
+            console.log("load data? ====", saveTiktokData);
+            return saveTiktokData(client);
+        case "Twitter":
+            return { error: "Twitter는 현재 미구현입니다."};
+        case "YouTube":
+            return { error: "YouTube는 현재 미구현입니다."};
+        default:
+            return { error: "지원하지 않는 SNS입니다."};
     }
-    console.log("Data Success");
-    return result.data;
 });
 
 // Excel 저장 기능
@@ -64,3 +63,7 @@ ipcMain.handle("save-excel", async (_, data, sns) => {
 
     return `파일 저장 완료: ${filePath}`;
 });
+
+/*
+
+*/
