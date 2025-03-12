@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNS 데이터 가져오기</title>
+</head>
+<body>
+    <h1>SNS 데이터 선택</h1>
+    <button onclick="fetchData('TikTok')">TikTok</button>
+    <button onclick="fetchData('Twitter')">Twitter</button>
+    <button onclick="fetchData('YouTube')">YouTube</button>
+
+    <button id="save-btn" style="display:none;" onclick="saveExcel()">엑셀로 저장</button>
+    <pre id="output"></pre>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
