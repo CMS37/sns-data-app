@@ -12,58 +12,78 @@ const { error } = require("console");
 let win;
 
 app.whenReady().then(() => {
-    win = new BrowserWindow({
-        width: 800,
-        height: 600,
-        webPreferences: {
-            nodeIntegration: true, //api 사용 가능
-            contextIsolation: false, //
-        },
-    });
+	win = new BrowserWindow({
+		width: 800,
+		height: 600,
+		webPreferences: {
+			nodeIntegration: true, //api 사용 가능
+			contextIsolation: false, //
+		},
+	});
 
-    win.loadFile("index.html");
+	win.loadFile("index.html");
 });
 
 const client = new EDClient({ token: process.env.API_TOKEN });
 
 // SNS 데이터 가져오기 요청 처리
 ipcMain.handle("fetch-data", async (_, sns) => {
-    console.log("Data for : ", sns);
+	console.log("Data for : ", sns);
 
-    switch (sns) {
-        case "TikTok":
-            const { saveTiktokData } = require("./tiktok.js");
-            console.log("load data? ====", saveTiktokData);
-            return saveTiktokData(client);
-        case "Twitter":
-            return { error: "Twitter는 현재 미구현입니다."};
-        case "YouTube":
-            return { error: "YouTube는 현재 미구현입니다."};
-        default:
-            return { error: "지원하지 않는 SNS입니다."};
-    }
+	switch (sns) {
+		case "TikTok":
+			const { saveTiktokData } = require("./tiktok.js");
+			return saveTiktokData(client);
+		case "Twitter":
+			return { error: "Twitter는 현재 미구현입니다."};
+		case "YouTube":
+			return { error: "YouTube는 현재 미구현입니다."};
+		default:
+			return { error: "지원하지 않는 SNS입니다."};
+	}
 });
 
 // Excel 저장 기능
+
 ipcMain.handle("save-excel", async (_, data, sns) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Data");
 
-    worksheet.columns = Object.keys(data[0]).map(key => ({
-        header: key,
-        key: key,
-        width: 20,
-    }));
+    worksheet.columns = [
+        { header: "국가", key: "country", width: 15 },
+        { header: "키워드", key: "keyword", width: 15 },
+        { header: "URL", key: "url", width: 25 },
+        { header: "닉네임", key: "nickname", width: 20 },
+        { header: "팔로워수", key: "followerCount", width: 15 },
+        { header: "게시물 링크", key: "share_url", width: 30 },
+        { header: "재생수", key: "play_count", width: 15 },
+        { header: "좋아요수", key: "digg_count", width: 15 },
+        { header: "생성시간", key: "create_time", width: 25 }
+    ];
 
-    data.forEach(item => worksheet.addRow(item));
+    data.forEach(record => {
+        if (Array.isArray(record.data)) {
+            record.data.forEach(item => {
+				const formattedTime = new Date(item.aweme_info.create_time * 1000).toISOString().split('T')[0];
 
-    //파일 저장 경로 및 파일명 설정
+                worksheet.addRow({
+                    country: record.country,
+                    keyword: record.keyword,
+                    url: "https://www.tiktok.com/@" + item.aweme_info.author.unique_id,
+                    nickname: item.aweme_info.author.nickname,
+                    followerCount: item.aweme_info.author.follower_count,
+                    share_url: item.aweme_info.share_info.share_url,
+                    play_count: item.aweme_info.statistics.play_count,
+                    digg_count: item.aweme_info.statistics.digg_count,
+                    create_time: formattedTime
+                });
+            });
+        }
+    });
+
+    // 파일 저장 경로 및 파일명 설정
     const filePath = path.join(os.homedir(), "Desktop", `${sns}_data.xlsx`);
     await workbook.xlsx.writeFile(filePath);
 
     return `파일 저장 완료: ${filePath}`;
 });
-
-/*
-
-*/

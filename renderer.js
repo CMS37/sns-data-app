@@ -8,7 +8,7 @@ async function fetchData(sns) {
     if (data.error) {
         document.getElementById("output").innerText = data.error;
     } else {
-        document.getElementById("output").innerText = JSON.stringify(data, null, 2);
+        document.getElementById("output").innerText = `${sns} 데이터를 ${data.length}개 가져왔습니다.`;
         window.selectedData = data;
         window.selectedSNS = sns;
         document.getElementById("save-btn").style.display = "block";
