@@ -70,6 +70,55 @@ document.getElementById("confirm-selection-btn").addEventListener("click", () =>
 	window.selectedCountry = countryValue;
 });
 
+// 나라 입력 필드 처리
+const countryInput = document.getElementById("country-input");
+const countryList = Object.values(countryMapping).map(item => item.name);
+
+countryInput.addEventListener("awesomplete-selectcomplete", function(e) {
+	addTag("country", e.text.value);
+	this.value = "";
+});
+
+countryInput.addEventListener("keydown", function(e) {
+	if (e.key === "Enter") {
+    	e.preventDefault();
+    	const inputEl = this;
+    	setTimeout(() => {
+			const value = inputEl.value.trim();
+			if (!value) return;
+			if (countryList.map(v => v.toLowerCase()).includes(value.toLowerCase())) {
+				addTag("country", value);
+			}
+			inputEl.value = "";
+			inputEl.focus();
+		}, 10);
+	}
+});
+
+const keywordInput = document.getElementById("keyword-input");
+
+keywordInput.addEventListener("awesomplete-selectcomplete", function(e) {
+	addTag("keyword", e.text.value);
+	this.value = "";
+});
+
+// Enter 키 이벤트: 입력된 값이 keywordList에 있는 경우에만 태그 추가
+keywordInput.addEventListener("keydown", function(e) {
+	if (e.key === "Enter") {
+		e.preventDefault();
+		const inputEl = this;
+		setTimeout(() => {
+			const value = inputEl.value.trim();
+			if (!value) return;
+			if (keywordList.map(v => v.toLowerCase()).includes(value.toLowerCase())) {
+				addTag("keyword", value);
+			}
+			inputEl.value = "";
+			inputEl.focus();
+		}, 10);
+	}
+});
+
 function transitionToSelectionScreen() {
 	const keywordInput = document.getElementById("keyword-input");
 	const countryInput = document.getElementById("country-input");
@@ -98,6 +147,31 @@ function transitionToFileSelection() {
 	document.getElementById("file-selection").style.display = "block";
 }
 
+function addTag(type, text) {
+	// 해당 타입에 맞는 태그 컨테이너의 ID 설정
+	const containerId = type === "keyword" ? "keyword-tags" : "country-tags";
+	const container = document.getElementById(containerId);
+  
+	// 이미 같은 값이 있는지 검사 (중복 방지)
+	const existingTags = Array.from(container.getElementsByClassName("tag")).map(tag => tag.dataset.value);
+	if (existingTags.includes(text)) return;
+  
+	// 태그 요소 생성
+	const tag = document.createElement("span");
+	tag.classList.add("tag");
+	tag.dataset.value = text;
+	tag.innerText = text + " ";
+  
+	// 삭제 버튼 생성
+	const removeBtn = document.createElement("button");
+	removeBtn.innerText = "x";
+	removeBtn.addEventListener("click", () => {
+	  container.removeChild(tag);
+	});
+  
+	tag.appendChild(removeBtn);
+	container.appendChild(tag);
+}
 
 async function fetchData(sns) {
 	// 두 파일 경로가 모두 선택되었는지 확인

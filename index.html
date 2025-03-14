@@ -38,20 +38,39 @@
 
 		<!-- 선택 화면: 나라와 키워드를 입력받는 화면 -->
 		<div id="selection-screen" class="container" style="display: none;">
-			<h2>키워드 및 나라 선택</h2>
-			<div>
-				<label for="keyword-input">키워드:</label>
-				<input id="keyword-input" class="awesomplete" placeholder="키워드 입력" />
-			</div>
+			<h2>나라 및 키워드 선택</h2>
 			<div>
 				<label for="country-input">나라:</label>
-				<input id="country-input" class="awesomplete" placeholder="나라 입력" />
+				<input id="country-input" placeholder="나라를 입력 후 Enter" />
 			</div>
+			<div id="country-tags" style="margin-top: 10px;"></div>
+			<div>
+				<label for="keyword-input">키워드:</label>
+				<input id="keyword-input" placeholder="키워드를 입력 후 Enter" />
+			</div>
+			<div id="keyword-tags" style="margin-top: 10px;"></div>
 			<div>
 				<button id="confirm-selection-btn">선택 완료</button>
 			</div>
 			<div id="selected-tags">
 			</div>
+		</div>
+
+		<div id="confirmation-screen" class="container" style="display: none;">
+			<h2>확인 화면</h2>
+			<div>
+				<strong>선택한 SNS:</strong> <span id="confirm-sns"></span>
+			</div>
+			<div>
+			  <strong>선택한 나라:</strong>
+			  <div id="confirm-country-tags"></div>
+			</div>
+			<div>
+			  <strong>선택한 키워드:</strong>
+			  <div id="confirm-keyword-tags"></div>
+			</div>
+			<br>
+			<button id="final-confirm-btn">API 요청 실행</button>
 		</div>
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>

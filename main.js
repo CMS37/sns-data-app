@@ -51,6 +51,7 @@ ipcMain.handle("load-excel-data", async (_, filePath) => {
 		worksheet.eachRow({ includeEmpty: false }, (row) => {
 			data.push(row.getCell(1).value);
 		});
+
 		return data;
 	} catch (error) {
 		console.error("엑셀 데이터 로드 에러:", error);
@@ -58,6 +59,7 @@ ipcMain.handle("load-excel-data", async (_, filePath) => {
 	}
 });
 
+/*
 // SNS 데이터 가져오기 요청 처리
 ipcMain.handle("fetch-data", async (_, sns, keywordFilePath, countryFilePath) => {
 	console.log("Data for:", sns);
@@ -126,3 +128,4 @@ ipcMain.handle("save-excel", async (_, data, sns) => {
 		await workbook.xlsx.writeFile(saveResult.filePath);
 		return `파일 저장 완료: ${saveResult.filePath}`;
 });
+*/
