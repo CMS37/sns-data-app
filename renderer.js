@@ -90,8 +90,36 @@ document.getElementById("confirm-selection-btn").addEventListener("click", () =>
 	document.getElementById("confirmation-screen").style.display = "block";
   });
   
+// 최종 확인 버튼: 선택한 SNS, 키워드, 나라로 데이터 요청
+document.getElementById("final-confirm-btn").addEventListener("click", async () => {
+	const outputElem = document.getElementById("output");
+	
+	document.getElementById("confirmation-screen").style.display = "none";
+	document.getElementById("result-screen").style.display = "block";
 
-// 나라 입력 필드 처리
+	outputElem.innerText = "";
+
+	function appendLog(message) {
+	  outputElem.innerText += message + "\n";
+	}
+
+	appendLog(`${window.selectedSNS} 데이터 요청 중...`);
+	
+	try {
+	  const data = await ipcRenderer.invoke("fetch-data", window.selectedSNS, window.selectedKeywords, window.selectedCountries);
+	  
+	  if (data.error) {
+		appendLog("오류 발생: " + data.error);
+	  } else {
+		appendLog(`${window.selectedSNS} 데이터 요청 완료 (${data.length} items)`);
+		window.selectedData = data;
+		document.getElementById("save-btn").style.display = "block";
+	  }
+	} catch (error) {
+	  appendLog("요청 처리 중 예외 발생: " + error.message);
+	}
+  });
+
 const countryInput = document.getElementById("country-input");
 const countryList = Object.values(countryMapping).map(item => item.name);
 
@@ -123,7 +151,6 @@ keywordInput.addEventListener("awesomplete-selectcomplete", function(e) {
 	this.value = "";
 });
 
-// Enter 키 이벤트: 입력된 값이 keywordList에 있는 경우에만 태그 추가
 keywordInput.addEventListener("keydown", function(e) {
 	if (e.key === "Enter") {
 		e.preventDefault();
@@ -216,6 +243,11 @@ async function fetchData(sns) {
 }
 
 async function saveExcel() {
-	const result = await ipcRenderer.invoke("save-excel", window.selectedData, window.selectedSNS);
-	alert(result);
-}
+	try {
+	  // window.selectedData와 window.selectedSNS에 저장된 데이터를 전달합니다.
+	  const result = await ipcRenderer.invoke("save-excel", window.selectedData, window.selectedSNS);
+	  alert(result);
+	} catch (error) {
+	  alert("엑셀 저장 중 오류 발생: " + error.message);
+	}
+  }

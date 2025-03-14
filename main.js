@@ -59,15 +59,16 @@ ipcMain.handle("load-excel-data", async (_, filePath) => {
 	}
 });
 
-/*
 // SNS 데이터 가져오기 요청 처리
-ipcMain.handle("fetch-data", async (_, sns, keywordFilePath, countryFilePath) => {
+ipcMain.handle("fetch-data", async (_, sns, selectedKeywords, selectedCountries) => {
 	console.log("Data for:", sns);
+	console.log("Selected Keywords:", selectedKeywords);
+	console.log("Selected Countries:", selectedCountries);
 
 	switch (sns) {
 		case "TikTok":
 			const { saveTiktokData } = require("./tiktok.js");
-			return saveTiktokData(client, keywordFilePath, countryFilePath);
+			return saveTiktokData(client, selectedKeywords, selectedCountries);
 		case "Twitter":
 			return { error: "Twitter는 현재 미구현입니다." };
 		case "YouTube":
@@ -128,4 +129,3 @@ ipcMain.handle("save-excel", async (_, data, sns) => {
 		await workbook.xlsx.writeFile(saveResult.filePath);
 		return `파일 저장 완료: ${saveResult.filePath}`;
 });
-*/
