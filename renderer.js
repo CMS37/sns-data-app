@@ -111,7 +111,7 @@ document.getElementById("final-confirm-btn").addEventListener("click", async () 
 	  if (data.error) {
 		appendLog("오류 발생: " + data.error);
 	  } else {
-		let totalCount = 1;
+		let totalCount = 0;
 		if (Array.isArray(data)) {
 		  data.forEach(item => {
 			if (Array.isArray(item.data)) {
