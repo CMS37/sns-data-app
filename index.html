@@ -1,25 +1,60 @@
 <!DOCTYPE html>
+
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SNS 데이터 가져오기</title>
-</head>
-<body>
-  <h1>SNS 데이터 선택</h1>
-  <button id="select-keyword-btn">키워드 파일 선택</button>
-  <span id="keyword-file-path"></span>
-  <br>
-  <button id="select-country-btn">나라 파일 선택</button>
-  <span id="country-file-path"></span>
-  <br><br>
-  <button onclick="fetchData('TikTok')">TikTok</button>
-  <button onclick="fetchData('Twitter')">Twitter</button>
-  <button onclick="fetchData('YouTube')">YouTube</button>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>SNS 데이터 가져오기</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css" />
+		<style>
+			.container { margin: 20px; }
+			.tag {
+				display: inline-block;
+				background-color: #e0e0e0;
+				padding: 5px 10px;
+				margin: 5px;
+				border-radius: 3px;
+			}
+		</style>
+	</head>
 
-  <button id="save-btn" style="display:none;" onclick="saveExcel()">엑셀로 저장</button>
-  <pre id="output"></pre>
+	<body>
+		<!-- SNS 선택 화면-->
+		<div id="sns-selection" class="container">
+			<h1>사용할 SNS 선택</h1>
+			<button id="sns-tiktok">TikTok</button>
+			<button id="sns-twitter">Twitter</button>
+			<button id="sns-youtube">YouTube</button>
+		</div>
 
-  <script src="renderer.js"></script>
-</body>
+		<!-- 파일 선택 화면-->
+		<div id="file-selection" class="container" style="display: none;">
+			<h2>키워드 파일 선택</h2>
+			<button id="select-keyword-btn">키워드 파일 선택</button>
+			<span id="keyword-file-path"></span>
+			<br><br>
+			<button id="confirm-keyword-btn">확인</button>
+		</div>
+
+		<!-- 선택 화면: 나라와 키워드를 입력받는 화면 -->
+		<div id="selection-screen" class="container" style="display: none;">
+			<h2>키워드 및 나라 선택</h2>
+			<div>
+				<label for="keyword-input">키워드:</label>
+				<input id="keyword-input" class="awesomplete" placeholder="키워드 입력" />
+			</div>
+			<div>
+				<label for="country-input">나라:</label>
+				<input id="country-input" class="awesomplete" placeholder="나라 입력" />
+			</div>
+			<div>
+				<button id="confirm-selection-btn">선택 완료</button>
+			</div>
+			<div id="selected-tags">
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+		<script src="renderer.js"></script>
+	</body>
 </html>
