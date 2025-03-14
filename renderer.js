@@ -111,14 +111,23 @@ document.getElementById("final-confirm-btn").addEventListener("click", async () 
 	  if (data.error) {
 		appendLog("오류 발생: " + data.error);
 	  } else {
-		appendLog(`${window.selectedSNS} 데이터 요청 완료 (${data.length} items)`);
+		let totalCount = 1;
+		if (Array.isArray(data)) {
+		  data.forEach(item => {
+			if (Array.isArray(item.data)) {
+			  totalCount += item.data.length;
+			}
+		  });
+		}
+		appendLog(`${window.selectedSNS} 데이터 요청 완료 (${totalCount} items)`);
 		window.selectedData = data;
 		document.getElementById("save-btn").style.display = "block";
-	  }
+		}
 	} catch (error) {
-	  appendLog("요청 처리 중 예외 발생: " + error.message);
+		spinnerElem.style.display = "none";
+		appendLog("요청 처리 중 예외 발생: " + error.message);
 	}
-  });
+});
 
 const countryInput = document.getElementById("country-input");
 const countryList = Object.values(countryMapping).map(item => item.name);
