@@ -30,7 +30,7 @@ document.getElementById("select-keyword-btn").addEventListener("click", async ()
 	}
 });
 
-// 확인 버튼: 키워드 파일이 선택되었으면 해당 파일에서 키워드 목록을 불러오고, 다음 화면으로 전환
+// 키워드 파일 확인 버튼
 document.getElementById("confirm-keyword-btn").addEventListener("click", async () => {
 	if (!window.keywordFilePath) {
 		alert("키워드 파일을 선택해주세요.");
@@ -41,34 +41,55 @@ document.getElementById("confirm-keyword-btn").addEventListener("click", async (
 	transitionToSelectionScreen();
 });
 
-// 선택 완료 버튼: 사용자가 입력한 키워드와 나라를 태그로 표시
+// 키워드 선택 완료 버튼: 사용자가 입력한 키워드와 나라를 태그로 표시
 document.getElementById("confirm-selection-btn").addEventListener("click", () => {
-	const keywordValue = document.getElementById("keyword-input").value;
-	const countryValue = document.getElementById("country-input").value;
-
-	if (!keywordValue || !countryValue) {
+	const keywordTagsContainer = document.getElementById("keyword-tags");
+	const countryTagsContainer = document.getElementById("country-tags");
+  
+	// 태그 컨테이너에 태그가 하나라도 없는 경우 경고 없이 그냥 리턴
+	if (keywordTagsContainer.children.length === 0 || countryTagsContainer.children.length === 0) {
 		alert("키워드와 나라를 모두 입력해주세요.");
 		return;
 	}
 
-	// 선택된 태그들을 표시할 영역에 태그 추가
-	const tagsContainer = document.getElementById("selected-tags");
-	tagsContainer.innerHTML = ""; // 이전 태그 지우기
+	const selectedKeywords = Array.from(keywordTagsContainer.getElementsByClassName("tag"))
+		.map(tag => tag.dataset.value);
+  
+	const selectedCountries = Array.from(countryTagsContainer.getElementsByClassName("tag"))
+		.map(tag => {
+			const koreanName = tag.dataset.value;
+		// countryMapping은 파일에서 불러온 JSON 객체 (키: 영어 코드, value: { name: 한글 이름, ... })
+		const code = Object.keys(countryMapping).find(key => countryMapping[key].name === koreanName);
+		return code || koreanName; // 변환에 실패하면 입력한 값을 그대로 반환 (예외 처리)
+	});
 
-	const keywordTag = document.createElement("span");
-	keywordTag.innerText = keywordValue;
-	keywordTag.classList.add("tag");
+	window.selectedKeywords = selectedKeywords;
+	window.selectedCountries = selectedCountries;
 
-	const countryTag = document.createElement("span");
-	countryTag.innerText = countryValue;
-	countryTag.classList.add("tag");
+	document.getElementById("confirm-sns").innerText = window.selectedSNS;
+  
+	const confirmCountryContainer = document.getElementById("confirm-country-tags");
+	confirmCountryContainer.innerHTML = "";
+	Array.from(countryTagsContainer.getElementsByClassName("tag")).forEach(tag => {
+		const displayTag = document.createElement("span");
+		displayTag.classList.add("tag");
+		displayTag.innerText = tag.dataset.value;
+		confirmCountryContainer.appendChild(displayTag);
+	});
+  
+	const confirmKeywordContainer = document.getElementById("confirm-keyword-tags");
+	confirmKeywordContainer.innerHTML = "";
+	selectedKeywords.forEach(keyword => {
+		const tag = document.createElement("span");
+		tag.classList.add("tag");
+		tag.innerText = keyword;
+		confirmKeywordContainer.appendChild(tag);
+	});
 
-	tagsContainer.appendChild(keywordTag);
-	tagsContainer.appendChild(countryTag);
-
-	window.selectedKeyword = keywordValue;
-	window.selectedCountry = countryValue;
-});
+	document.getElementById("selection-screen").style.display = "none";
+	document.getElementById("confirmation-screen").style.display = "block";
+  });
+  
 
 // 나라 입력 필드 처리
 const countryInput = document.getElementById("country-input");
