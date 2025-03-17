@@ -192,14 +192,12 @@ function transitionToSelectionScreen() {
 	const keywordInput = document.getElementById("keyword-input");
 	const countryInput = document.getElementById("country-input");
 
-	// 키워드 입력 필드에 Awesomplete 초기화 (엑셀 파일에서 불러온 키워드 목록 사용)
 	new Awesomplete(keywordInput, {
 		list: keywordList,
 		minChars: 0,
 		autoFirst: true
 	});
 
-	// 나라 입력 필드에 Awesomplete 초기화 (mapping.json의 나라 목록 사용)
 	const countryList = Object.values(countryMapping).map(item => item.name);
 	new Awesomplete(countryInput, {
 		list: countryList,
@@ -207,9 +205,9 @@ function transitionToSelectionScreen() {
 		autoFirst: true
 	});
 
-	// 선택 화면 보이기
 	document.getElementById("selection-screen").style.display = "block";
 }
+
 //SNS선택후 파일선택 전환
 function transitionToFileSelection() {
 	document.getElementById("sns-selection").style.display = "none";
@@ -217,25 +215,22 @@ function transitionToFileSelection() {
 }
 
 function addTag(type, text) {
-	// 해당 타입에 맞는 태그 컨테이너의 ID 설정
 	const containerId = type === "keyword" ? "keyword-tags" : "country-tags";
 	const container = document.getElementById(containerId);
-  
-	// 이미 같은 값이 있는지 검사 (중복 방지)
 	const existingTags = Array.from(container.getElementsByClassName("tag")).map(tag => tag.dataset.value);
-	if (existingTags.includes(text)) return;
-  
-	// 태그 요소 생성
+
+	if (existingTags.includes(text))
+		return;
+
 	const tag = document.createElement("span");
 	tag.classList.add("tag");
 	tag.dataset.value = text;
 	tag.innerText = text + " ";
-  
-	// 삭제 버튼 생성
+
 	const removeBtn = document.createElement("button");
 	removeBtn.innerText = "x";
 	removeBtn.addEventListener("click", () => {
-	  container.removeChild(tag);
+		container.removeChild(tag);
 	});
   
 	tag.appendChild(removeBtn);
