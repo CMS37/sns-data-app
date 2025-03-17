@@ -6,7 +6,6 @@ const os = require("os");
 const { EDClient } = require("ensembledata");  // <-- ensembledata도 require
 const ExcelJS = require("exceljs");
 const { dialog } = require("electron");
-const { error } = require("console");
 
 // .env 파일 로드 패키징환경에선 강제로 리소스path에서 꺼내오기
 

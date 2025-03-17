@@ -1,10 +1,6 @@
 const { ipcRenderer } = require("electron");
 const countryMapping = require("./country_mapping.json");
 
-let keywordlist = [];
-let selectedSNS = null;
-
-
 // SNS 선택 버튼
 document.getElementById("sns-tiktok").addEventListener("click", () => {
 	window.selectedSNS = "TikTok";
