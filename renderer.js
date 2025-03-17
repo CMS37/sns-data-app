@@ -19,7 +19,7 @@ document.getElementById("sns-youtube").addEventListener("click", () => {
 
 // 키워드 파일 선택 버튼
 document.getElementById("select-keyword-btn").addEventListener("click", async () => {
-	const filePath = await ipcRenderer.invoke("open-excel-dialog", "keyword");
+	const filePath = await ipcRenderer.invoke("open-excel-dialog");
 	if (filePath) {
 		document.getElementById("keyword-file-path").innerText = filePath;
 		window.keywordFilePath = filePath;
@@ -92,7 +92,7 @@ document.getElementById("confirm-selection-btn").addEventListener("click", () =>
 	document.getElementById("confirm-match-exactly").innerText = window.matchExactly ? "Yes" : "No";
 	document.getElementById("selection-screen").style.display = "none";
 	document.getElementById("confirmation-screen").style.display = "block";
-  });
+});
   
 // 최종 확인 버튼: 선택한 SNS, 키워드, 나라로 데이터 요청
 document.getElementById("final-confirm-btn").addEventListener("click", async () => {
@@ -105,7 +105,7 @@ document.getElementById("final-confirm-btn").addEventListener("click", async () 
 	outputElem.innerText = "";
 
 	function appendLog(message) {
-	  outputElem.innerText += message + "\n";
+		outputElem.innerText += message + "\n";
 	}
 
 	appendLog(`${window.selectedSNS} 데이터 요청 중 ...`);
@@ -127,7 +127,7 @@ document.getElementById("final-confirm-btn").addEventListener("click", async () 
 			if (Array.isArray(data)) {
 				data.forEach(item => {
 					if (Array.isArray(item.data)) {
-					  totalCount += item.data.length;
+						totalCount += item.data.length;
 					}
 				});
 			}
@@ -244,10 +244,9 @@ function addTag(type, text) {
 
 async function saveExcel() {
 	try {
-	  // window.selectedData와 window.selectedSNS에 저장된 데이터를 전달합니다.
-	  const result = await ipcRenderer.invoke("save-excel", window.selectedData, window.selectedSNS);
-	  alert(result);
+		const result = await ipcRenderer.invoke("save-excel", window.selectedData, window.selectedSNS);
+		alert(result);
 	} catch (error) {
-	  alert("엑셀 저장 중 오류 발생: " + error.message);
+		alert("엑셀 저장 중 오류 발생: " + error.message);
 	}
-  }
+}
