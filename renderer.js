@@ -46,7 +46,6 @@ document.getElementById("confirm-selection-btn").addEventListener("click", () =>
 	const keywordTagsContainer = document.getElementById("keyword-tags");
 	const countryTagsContainer = document.getElementById("country-tags");
   
-	// 태그 컨테이너에 태그가 하나라도 없는 경우 경고 없이 그냥 리턴
 	if (keywordTagsContainer.children.length === 0 || countryTagsContainer.children.length === 0) {
 		alert("키워드와 나라를 모두 입력해주세요.");
 		return;
@@ -58,13 +57,20 @@ document.getElementById("confirm-selection-btn").addEventListener("click", () =>
 	const selectedCountries = Array.from(countryTagsContainer.getElementsByClassName("tag"))
 		.map(tag => {
 			const koreanName = tag.dataset.value;
-		// countryMapping은 파일에서 불러온 JSON 객체 (키: 영어 코드, value: { name: 한글 이름, ... })
 		const code = Object.keys(countryMapping).find(key => countryMapping[key].name === koreanName);
-		return code || koreanName; // 변환에 실패하면 입력한 값을 그대로 반환 (예외 처리)
+		return code || koreanName;
 	});
+
+	const period = document.getElementById("period-select").value;
+	const sorting = document.getElementById("sorting-select").value;
+	const matchExactly = document.getElementById("matchExactly-checkbox").checked;
 
 	window.selectedKeywords = selectedKeywords;
 	window.selectedCountries = selectedCountries;
+	window.period = period;
+	window.sorting = sorting;
+	window.matchExactly = matchExactly;
+
 
 	document.getElementById("confirm-sns").innerText = window.selectedSNS;
   
@@ -85,7 +91,9 @@ document.getElementById("confirm-selection-btn").addEventListener("click", () =>
 		tag.innerText = keyword;
 		confirmKeywordContainer.appendChild(tag);
 	});
-
+	document.getElementById("confirm-period").innerText = window.period + "일";
+	document.getElementById("confirm-sorting").innerText = window.sorting ? "좋아요순" : "관련순";
+	document.getElementById("confirm-match-exactly").innerText = window.matchExactly ? "Yes" : "No";
 	document.getElementById("selection-screen").style.display = "none";
 	document.getElementById("confirmation-screen").style.display = "block";
   });
@@ -93,6 +101,7 @@ document.getElementById("confirm-selection-btn").addEventListener("click", () =>
 // 최종 확인 버튼: 선택한 SNS, 키워드, 나라로 데이터 요청
 document.getElementById("final-confirm-btn").addEventListener("click", async () => {
 	const outputElem = document.getElementById("output");
+	const spinnerElem = document.getElementById("spinner");
 	
 	document.getElementById("confirmation-screen").style.display = "none";
 	document.getElementById("result-screen").style.display = "block";
@@ -106,22 +115,29 @@ document.getElementById("final-confirm-btn").addEventListener("click", async () 
 	appendLog(`${window.selectedSNS} 데이터 요청 중...`);
 	
 	try {
-	  const data = await ipcRenderer.invoke("fetch-data", window.selectedSNS, window.selectedKeywords, window.selectedCountries);
+		const data = await ipcRenderer.invoke("fetch-data", 
+			window.selectedSNS,
+			window.selectedKeywords,
+			window.selectedCountries,
+			window.period,
+			window.sorting,
+			window.matchExactly
+		);
 	  
-	  if (data.error) {
-		appendLog("오류 발생: " + data.error);
-	  } else {
-		let totalCount = 0;
-		if (Array.isArray(data)) {
-		  data.forEach(item => {
-			if (Array.isArray(item.data)) {
-			  totalCount += item.data.length;
+		if (data.error) {
+			appendLog("오류 발생: " + data.error);
+		} else {
+			let totalCount = 0;
+			if (Array.isArray(data)) {
+				data.forEach(item => {
+					if (Array.isArray(item.data)) {
+					  totalCount += item.data.length;
+					}
+				});
 			}
-		  });
-		}
-		appendLog(`${window.selectedSNS} 데이터 요청 완료 (${totalCount} items)`);
-		window.selectedData = data;
-		document.getElementById("save-btn").style.display = "block";
+			appendLog(`${window.selectedSNS} 데이터 요청 완료 (${totalCount} items)`);
+			window.selectedData = data;
+			document.getElementById("save-btn").style.display = "block";
 		}
 	} catch (error) {
 		spinnerElem.style.display = "none";

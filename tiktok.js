@@ -15,10 +15,8 @@ async function loadExcelData(filePath) {
 
 const testData = require("./TiktokTest.json");
 
-async function saveTiktokData(client, selectedKeywords, selectedCountries) {
+async function saveTiktokData(client, selectedKeywords, selectedCountries, period, sorting, matchExactly) {
 	console.log("TikTok Data loading...");
-	console.log("Selected Keywords:", selectedKeywords);
-	console.log("Selected Countries:", selectedCountries);
 	
 	const Data = [];
 
@@ -40,9 +38,9 @@ async function saveTiktokData(client, selectedKeywords, selectedCountries) {
 				const result = await client.tiktok.fullKeywordSearch({
 					keyword: keyword,
 					country: country,
-					period: 1, //주어진 기간보다 최근 게시물 = "0", "1", "7", "30", "90", "180" (일)
-					sorting: 0, // 0: 관련성, 1: 좋아요순
-					matchExactly: false, // 정확히 일치하는 게시물만 가져오기 (true/false)
+					period: Number(period), //주어진 기간보다 최근 게시물 = "0", "1", "7", "30", "90", "180" (일)
+					sorting: Number(sorting), // 0: 관련성, 1: 좋아요순
+					matchExactly: matchExactly, // 정확히 일치하는 게시물만 가져오기 (true/false)
 				});
 
 				if (result.error) {

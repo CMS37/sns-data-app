@@ -60,15 +60,18 @@ ipcMain.handle("load-excel-data", async (_, filePath) => {
 });
 
 // SNS 데이터 가져오기 요청 처리
-ipcMain.handle("fetch-data", async (_, sns, selectedKeywords, selectedCountries) => {
+ipcMain.handle("fetch-data", async (_, sns, selectedKeywords, selectedCountries, period, sorting, matchExactly) => {
 	console.log("Data for:", sns);
 	console.log("Selected Keywords:", selectedKeywords);
 	console.log("Selected Countries:", selectedCountries);
+	console.log("Period:", period);
+	console.log("Sorting:", sorting);
+	console.log("Match Exactly:", matchExactly);
 
 	switch (sns) {
 		case "TikTok":
 			const { saveTiktokData } = require("./tiktok.js");
-			return saveTiktokData(client, selectedKeywords, selectedCountries);
+			return saveTiktokData(client, selectedKeywords, selectedCountries, period, sorting, matchExactly);
 		case "Twitter":
 			return { error: "Twitter는 현재 미구현입니다." };
 		case "YouTube":
