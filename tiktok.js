@@ -40,14 +40,15 @@ async function saveTiktokData(client, selectedKeywords, selectedCountries, perio
 					country: country,
 					period: Number(period), //주어진 기간보다 최근 게시물 = "0", "1", "7", "30", "90", "180" (일)
 					sorting: Number(sorting), // 0: 관련성, 1: 좋아요순
-					matchExactly: matchExactly, // 정확히 일치하는 게시물만 가져오기 (true/false)
+					match_exactly: matchExactly, // 정확히 일치하는 게시물만 가져오기 (true/false)
 				});
-
+				console.log(result);
 				if (result.error) {
 					console.error(`API Error for country "${country}", keyword "${keyword}":`, result.error);
 					continue;
 				}
 				console.log(`Data Success for country "${country}", keyword "${keyword}" (${result.data.length} items)`);
+
 				Data.push({
 					country: country,
 					keyword: keyword,

@@ -9,6 +9,7 @@ const { dialog } = require("electron");
 const { error } = require("console");
 
 // .env 파일 로드 패키징환경에선 강제로 리소스path에서 꺼내오기
+
 // const envPath = path.join(process.resourcesPath, ".env");
 
 const envPath = process.env.NODE_ENV === "production"
@@ -37,7 +38,7 @@ const client = new EDClient({ token: process.env.API_TOKEN });
 
 // 엑셀 파일 열기
 ipcMain.handle("open-excel-dialog", async (_, fileType) => {
-	const title = "키워드 엑셀 파일 선택" + process.env.API_TOKEN;
+	const title = "키워드 엑셀 파일 선택";
 	const result = await dialog.showOpenDialog({
 		title: title,
 		properties: ['openFile'],
