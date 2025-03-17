@@ -1,14 +1,16 @@
+const path = require("path");
 const dotenv = require("dotenv");
 
 const { app, BrowserWindow, ipcMain } = require("electron");
-const path = require("path");
 const os = require("os");
 const { EDClient } = require("ensembledata");  // <-- ensembledata도 require
 const ExcelJS = require("exceljs");
 const { dialog } = require("electron");
 const { error } = require("console");
 
-// .env 파일 로드
+// .env 파일 로드 패키징환경에선 강제로 리소스path에서 꺼내오기
+// const envPath = path.join(process.resourcesPath, ".env");
+
 const envPath = process.env.NODE_ENV === "production"
   ? path.join(process.resourcesPath, ".env")
   : path.join(__dirname, ".env");
@@ -33,13 +35,9 @@ app.whenReady().then(() => {
 
 const client = new EDClient({ token: process.env.API_TOKEN });
 
-ipcMain.handle("get-token", () => {
-	return process.env.API_TOKEN;
-  });
-
 // 엑셀 파일 열기
 ipcMain.handle("open-excel-dialog", async (_, fileType) => {
-	const title = "키워드 엑셀 파일 선택";
+	const title = "키워드 엑셀 파일 선택" + process.env.API_TOKEN;
 	const result = await dialog.showOpenDialog({
 		title: title,
 		properties: ['openFile'],
