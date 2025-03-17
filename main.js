@@ -1,4 +1,4 @@
-require("dotenv").config();
+const dotenv = require("dotenv");
 
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
@@ -8,6 +8,12 @@ const ExcelJS = require("exceljs");
 const { dialog } = require("electron");
 const { error } = require("console");
 
+// .env 파일 로드
+const envPath = process.env.NODE_ENV === "production"
+  ? path.join(process.resourcesPath, ".env")
+  : path.join(__dirname, ".env");
+
+dotenv.config({ path: envPath });
 
 // 프로그램 창 설정
 let win;
@@ -26,6 +32,10 @@ app.whenReady().then(() => {
 });
 
 const client = new EDClient({ token: process.env.API_TOKEN });
+
+ipcMain.handle("get-token", () => {
+	return process.env.API_TOKEN;
+  });
 
 // 엑셀 파일 열기
 ipcMain.handle("open-excel-dialog", async (_, fileType) => {
@@ -67,6 +77,7 @@ ipcMain.handle("fetch-data", async (_, sns, selectedKeywords, selectedCountries,
 	console.log("Period:", period);
 	console.log("Sorting:", sorting);
 	console.log("Match Exactly:", matchExactly);
+	console.log("API Token:", process.env.API_TOKEN);
 
 	switch (sns) {
 		case "TikTok":

@@ -112,7 +112,15 @@ document.getElementById("final-confirm-btn").addEventListener("click", async () 
 	  outputElem.innerText += message + "\n";
 	}
 
+	const token = await ipcRenderer.invoke("get-token");
 	appendLog(`${window.selectedSNS} 데이터 요청 중...`);
+	appendLog("키워드: " + window.selectedKeywords.join(", "));
+	appendLog("나라: " + window.selectedCountries.join(", "));
+	appendLog("기간: " + window.period + "일");
+	appendLog("정렬: " + (window.sorting ? "좋아요순" : "관련순"));
+	appendLog("정확히 일치: " + (window.matchExactly ? "Yes" : "No"));
+	appendLog("토큰: " + token);
+	appendLog("요청 중...");
 	
 	try {
 		const data = await ipcRenderer.invoke("fetch-data", 
@@ -245,34 +253,3 @@ function addTag(type, text) {
 	tag.appendChild(removeBtn);
 	container.appendChild(tag);
 }
-
-async function fetchData(sns) {
-	// 두 파일 경로가 모두 선택되었는지 확인
-	if (!window.keywordFilePath || !window.countryFilePath) {
-		document.getElementById("output").innerText = "키워드 파일과 나라 파일을 모두 선택해주세요.";
-		return;
-	}
-
-	document.getElementById("output").innerText = `${sns} 데이터 가져오는 중...`;
-	// 파일 경로를 함께 전달합니다.
-	const data = await ipcRenderer.invoke("fetch-data", sns, window.keywordFilePath, window.countryFilePath);
-
-	if (data.error) {
-		document.getElementById("output").innerText = data.error;
-	} else {
-		document.getElementById("output").innerText = `${sns} 데이터 가져오기 완료 (${data.length} items)`;
-		window.selectedData = data;
-		window.selectedSNS = sns;
-		document.getElementById("save-btn").style.display = "block";
-	}
-}
-
-async function saveExcel() {
-	try {
-	  // window.selectedData와 window.selectedSNS에 저장된 데이터를 전달합니다.
-	  const result = await ipcRenderer.invoke("save-excel", window.selectedData, window.selectedSNS);
-	  alert(result);
-	} catch (error) {
-	  alert("엑셀 저장 중 오류 발생: " + error.message);
-	}
-  }
