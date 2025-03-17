@@ -92,6 +92,7 @@ ipcMain.handle("save-excel", async (_, data, sns) => {
 				{ header: "게시물 링크", key: "share_url", width: 30 },
 				{ header: "재생수", key: "play_count", width: 15 },
 				{ header: "좋아요수", key: "digg_count", width: 15 },
+				{ header: "다운로드 수", key: "download_count", width: 15 },
 				{ header: "생성시간", key: "create_time", width: 25 }
 		];
 		console.log("Data:", data);
@@ -109,6 +110,7 @@ ipcMain.handle("save-excel", async (_, data, sns) => {
 										share_url: item.aweme_info.share_info.share_url,
 										play_count: item.aweme_info.statistics.play_count,
 										digg_count: item.aweme_info.statistics.digg_count,
+										download_count: item.aweme_info.statistics.download_count,
 										create_time: formattedTime
 								});
 						});
