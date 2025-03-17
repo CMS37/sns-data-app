@@ -19,5 +19,3 @@
 - **tiktok.js:** TikTok 데이터를 수집하는 API 호출 로직 (ensembledata 라이브러리 사용)
 - **index.html:** 전체 UI 레이아웃 (SNS 선택, 파일 선택, 입력, 확인, 결과 화면)
 - **country_mapping.json:** 나라 이름과 코드 매핑 데이터
-- **.env:** API 토큰 등 환경 변수 (build 시 extraResources로 포함)
-- **TiktokTest.json, keyword.xlsx:** 테스트 및 데이터 파일
