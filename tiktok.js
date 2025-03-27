@@ -2,22 +2,10 @@
 
 async function saveTiktokData(client, selectedKeywords, selectedCountries, period, sorting, matchExactly) {
 	console.log("TikTok Data loading...");
-	
+  
 	const data = [];
-
-// 	for (const country of selectedCountries) {
-// 		for (const keyword of selectedKeywords) {
-// 			Data.push({
-// 				country: country,
-// 				keyword: keyword,
-// 				data: testData.data
-// 			});
-// 		}
-// 	}
-// 	return Data;
-// }
 	const promises = [];
-
+  
 	for (const country of selectedCountries) {
 		for (const keyword of selectedKeywords) {
 			console.log(`Country: ${country}, Keyword: ${keyword}`);
@@ -25,9 +13,9 @@ async function saveTiktokData(client, selectedKeywords, selectedCountries, perio
 				client.tiktok.fullKeywordSearch({
 					keyword: keyword,
 					country: country,
-					period: Number(period), //주어진 기간보다 최근 게시물 = "0", "1", "7", "30", "90", "180" (일)
-					sorting: Number(sorting), // 0: 관련성, 1: 좋아요순
-					match_exactly: matchExactly, // 정확히 일치하는 게시물만 가져오기 (true/false)
+					period: Number(period),
+					sorting: Number(sorting),
+					match_exactly: matchExactly,
 				}).then(result => {
 					if (result.error) {
 						console.error(`API Error for country "${country}", keyword "${keyword}":`, result.error);
@@ -35,20 +23,41 @@ async function saveTiktokData(client, selectedKeywords, selectedCountries, perio
 					}
 
 					console.log(`Data Success for country "${country}", keyword "${keyword}" (${result.data.length} items)`);
+					console.log('Now fetching user info...');
 
-					data.push({
+					const posts = result.data;
+
+					const userInfoPromises = posts.map(post => {
+						const secUid = post.aweme_info.author.sec_uid;
+						
+						console.log(`Fetching user info for ${post.aweme_info.author.nickname}`);
+
+						client.tiktok.userInfoFromSecuid({ 
+							secUid: secUid 
+						}).then(userInfoResult => {
+							post.userInfo = userInfoResult.data;
+							console.log('User info fetched:', userInfoResult.data);
+						}).catch(error => {
+							console.error(`Failed to fetch user info for ${userName}:`, error);
+						});
+					});
+
+					return Promise.all(userInfoPromises).then(() => {
+						data.push({
 						country: country,
 						keyword: keyword,
-						data: result.data,
+						data: posts,
 					});
-				}).catch(error => {
-					console.error(`Exception for country "${country}", keyword "${keyword}":`, error);
-				})
-			);
+			});
+			}).catch(error => {
+			console.error(`Exception for country "${country}", keyword "${keyword}":`, error);
+			})
+		);
 		}
 	}
 
 	await Promise.all(promises);
+
 	return data;
 }
 
