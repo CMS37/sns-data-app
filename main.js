@@ -103,7 +103,15 @@ ipcMain.handle("save-excel", async (_, data, sns) => {
 		{ header: "재생수", key: "play_count", width: 15 },
 		{ header: "좋아요수", key: "digg_count", width: 15 },
 		{ header: "다운로드 수", key: "download_count", width: 15 },
-		{ header: "생성시간", key: "create_time", width: 25 }
+		{ header: "생성시간", key: "create_time", width: 25 },
+		{ header: "유저 나라", key: "userRegion", width: 15 },
+		{ header: "유저 소개글", key: "userBio", width: 30 },
+		{ header: "Instagram ID", key: "userInstagram", width: 20 },
+		{ header: "Twitter ID", key: "userTwitterID", width: 20 },
+		{ header: "Twitter Nickname", key: "userTwitterNickname", width: 20 },
+		{ header: "YouTube ID", key: "userYouTubeID", width: 20 },
+		{ header: "YouTube Channel", key: "userYouTubeChannel", width: 20 },
+
 	];
 
 	data.forEach(record => {
@@ -120,8 +128,23 @@ ipcMain.handle("save-excel", async (_, data, sns) => {
 					play_count: item.aweme_info.statistics.play_count,
 					digg_count: item.aweme_info.statistics.digg_count,
 					download_count: item.aweme_info.statistics.download_count,
-					create_time: formattedTime
+					create_time: formattedTime,
+					userRegion: item.userInfo.region,
+					userBio: item.userInfo.signature,
+					userInstagram: item.userInfo.ins_id,
+					userTwitterID: item.userInfo.twitter_id,
+					userTwitterNickname: item.userInfo.twitter_name,
+					userYouTubeID: item.userInfo.youtube_channel_id,
+					userYouTubeChannel: item.userInfo.youtube_channel_title
 				});
+				consloe.log("User Region: ", item.userInfo.region);
+				console.log("User Bio: ", item.userInfo.signature);
+				console.log("User Instagram: ", item.userInfo.ins_id);
+				console.log("User Twitter ID: ", item.userInfo.twitter_id);
+				console.log("User Twitter Nickname: ", item.userInfo.twitter_name);
+				console.log("User YouTube ID: ", item.userInfo.youtube_channel_id);
+				console.log("User YouTube Channel: ", item.userInfo.youtube_channel_title);
+
 			});
 		}
 	});
