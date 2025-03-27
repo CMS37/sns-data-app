@@ -29,16 +29,16 @@ async function saveTiktokData(client, selectedKeywords, selectedCountries, perio
 
 					const userInfoPromises = posts.map(post => {
 						const secUid = post.aweme_info.author.sec_uid;
-						
-						console.log(`Fetching user info for ${post.aweme_info.author.nickname}`);
 
-						client.tiktok.userInfoFromSecuid({ 
+						return client.tiktok.userInfoFromSecuid({ 
 							secUid: secUid 
 						}).then(userInfoResult => {
-							post.userInfo = userInfoResult.data;
-							console.log('User info fetched:', userInfoResult.data);
+							post.userInfo = userInfoResult.data.user;
+							console.log("User info fetch for ", post.aweme_info.author.nickname);
+							console.log("User info: ", post.userInfo); 
+
 						}).catch(error => {
-							console.error(`Failed to fetch user info for ${userName}:`, error);
+							console.error(`Failed to fetch user info for ${post.aweme_info.author.nickname}:`, error);
 						});
 					});
 
@@ -57,7 +57,6 @@ async function saveTiktokData(client, selectedKeywords, selectedCountries, perio
 	}
 
 	await Promise.all(promises);
-
 	return data;
 }
 

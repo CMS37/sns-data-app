@@ -129,22 +129,14 @@ ipcMain.handle("save-excel", async (_, data, sns) => {
 					digg_count: item.aweme_info.statistics.digg_count,
 					download_count: item.aweme_info.statistics.download_count,
 					create_time: formattedTime,
-					userRegion: item.userInfo.region,
-					userBio: item.userInfo.signature,
-					userInstagram: item.userInfo.ins_id,
-					userTwitterID: item.userInfo.twitter_id,
-					userTwitterNickname: item.userInfo.twitter_name,
-					userYouTubeID: item.userInfo.youtube_channel_id,
-					userYouTubeChannel: item.userInfo.youtube_channel_title
+					userRegion: item.userInfo.region || "",
+					userBio: item.userInfo.signature || "",
+					userInstagram: item.userInfo.ins_id || "",
+					userTwitterID: item.userInfo.twitter_id || "",
+					userTwitterNickname: item.userInfo.twitter_name || "",
+					userYouTubeID: item.userInfo.youtube_channel_id || "",
+					userYouTubeChannel: item.userInfo.youtube_channel_title || ""
 				});
-				consloe.log("User Region: ", item.userInfo.region);
-				console.log("User Bio: ", item.userInfo.signature);
-				console.log("User Instagram: ", item.userInfo.ins_id);
-				console.log("User Twitter ID: ", item.userInfo.twitter_id);
-				console.log("User Twitter Nickname: ", item.userInfo.twitter_name);
-				console.log("User YouTube ID: ", item.userInfo.youtube_channel_id);
-				console.log("User YouTube Channel: ", item.userInfo.youtube_channel_title);
-
 			});
 		}
 	});

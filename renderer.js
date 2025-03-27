@@ -132,6 +132,7 @@ document.getElementById("final-confirm-btn").addEventListener("click", async () 
 				});
 			}
 			appendLog(`${window.selectedSNS} 데이터 요청 완료 (${totalCount} items)`);
+			console.log(data);
 			window.selectedData = data;
 			document.getElementById("save-btn").style.display = "block";
 		}
