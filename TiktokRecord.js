@@ -35,19 +35,18 @@ function RecordToSheet(ss, tasks) {
 				var createTime = post.aweme_info.create_time ?
 					  new Date(post.aweme_info.create_time * 1000).toISOString().split("T")[0] : "";
 				
-				// 유저 정보는 task 단위로 가져온 값이므로 동일하게 사용
 				var userRegion = "";
 				var userBio = "";
 				var userInstagram = "";
 				var userX = "";
 				var userYouTubeChannel = "";
-				if (task.userInfo && task.userInfo.data && task.userInfo.data.user) {
-				  var user = task.userInfo.data.user;
-				  userRegion = user.region || "";
-				  userBio = user.signature || "";
-				  userInstagram = user.ins_id || "";
-				  userX = user.twitter_name || "";
-				  userYouTubeChannel = user.youtube_channel_title || "";
+				if (post.userInfo && post.userInfo.data && post.userInfo.data.user) {
+					var user = post.userInfo.data.user;
+					userRegion = user.region || "";
+					userBio = user.signature || "";
+					userInstagram = user.ins_id || "";
+					userX = user.twitter_name || "";
+					userYouTubeChannel = user.youtube_channel_title || "";
 				}
 				
 				var instaHyperlink = userInstagram ? '=HYPERLINK("https://www.instagram.com/' + userInstagram + '", "' + userInstagram + '")' : "";
