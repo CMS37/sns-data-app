@@ -42,7 +42,7 @@ function fetchAllKeywordData(tasks, period, sorting, matchExactly, token) {
 		task.url = buildKeywordUrl(task.country, task.keyword, period, sorting, matchExactly, token);
 	});
 
-	Log("총 " + tasks.length + "개의 키워드 API 요청을 시작합니다.");
+	Log("총 " + tasks.length + "개의 키워드 API 요청 시작");
 	var urls = tasks.map(function(task) { return task.url; });
 	var responses = UrlFetchApp.fetchAll(urls);
 	
@@ -78,7 +78,7 @@ function fetchAllUserData(tasks, token) {
 	  return tasks;
 	}
 
-	Log("총 " + userTasks.length + "개의 유저 API 요청을 시작합니다.");
+	Log("총 " + userTasks.length + "개의 유저 API 요청 시작");
 	var userUrls = userTasks.map(function(task) { return task.url; });
 	var responses = UrlFetchApp.fetchAll(userUrls);
 	

@@ -2,7 +2,7 @@ function mainProcess() {
 	try {
 		Log("메인 시작");
 		var sheetData = TiktokData();
-		Log("시트 데이터: " + JSON.stringify(sheetData));
+		Log("시트 데이터 수집 완료");
 
 		var ss = sheetData.ss;
 		var tasks = sheetData.tasks;

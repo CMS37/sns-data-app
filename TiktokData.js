@@ -1,6 +1,6 @@
 function TiktokData() {
 
-	Log("데이터 수집 시작");
+	Log("시트 데이터 수집 시작");
 
 	var ss = SpreadsheetApp.getActiveSpreadsheet();
 	var sheet = ss.getActiveSheet();
@@ -24,19 +24,19 @@ function TiktokData() {
 	var tasks = [];
 	
 	data.forEach(function(row) {
-	  var country = row[0];
-	  var keyword = row[1];
-	  if (country && keyword) {
-		tasks.push({ country: country, keyword: keyword });
-	  }
+		var country = row[0];
+		var keyword = row[1];
+		if (country && keyword) {
+			tasks.push({ country: country, keyword: keyword });
+		}
 	});
 
 	return {
-	  ss: ss,
-	  tasks: tasks,
-	  period: period,
-	  sorting: sorting,
-	  matchExactly: matchExactly,
-	  token: token
+		ss: ss,
+		tasks: tasks,
+		period: period,
+		sorting: sorting,
+		matchExactly: matchExactly,
+		token: token
 	};
 }
