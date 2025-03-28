@@ -42,6 +42,7 @@ function fetchAllKeywordData(tasks, period, sorting, matchExactly, token) {
 		task.url = buildKeywordUrl(task.country, task.keyword, period, sorting, matchExactly, token);
 	});
 
+
 	Log("총 " + tasks.length + "개의 키워드 API 요청 시작");
 	var urls = tasks.map(function(task) { return task.url; });
 	var responses = UrlFetchApp.fetchAll(urls);
@@ -78,7 +79,7 @@ function fetchAllUserData(tasks, token) {
 	  return tasks;
 	}
 
-	Log("총 " + userTasks.length + "개의 유저 API 요청 시작");
+	Log("총 " + userTasks.length + "개의 유저 API 요청 시작"); //1개라고뜸 이부분 나중에 확인 필요
 	var userUrls = userTasks.map(function(task) { return task.url; });
 	var responses = UrlFetchApp.fetchAll(userUrls);
 	
