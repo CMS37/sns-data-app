@@ -96,7 +96,7 @@ ipcMain.handle("save-excel", async (_, data, sns) => {
 	worksheet.columns = [
 		{ header: "국가", key: "country", width: 15 },
 		{ header: "키워드", key: "keyword", width: 15 },
-		{ header: "틱톡", key: "url", width: 25 },
+		{ header: "틱톡닉네임", key: "url", width: 25 },
 		{ header: "게시물 링크", key: "share_url", width: 30 },
 		{ header: "팔로워수", key: "followerCount", width: 15 },
 		{ header: "재생수", key: "play_count", width: 15 },
@@ -123,7 +123,7 @@ ipcMain.handle("save-excel", async (_, data, sns) => {
 						hyperlink: "https://www.tiktok.com/@" + item.aweme_info.author.unique_id 
 					},
 					share_url: {
-						text: "Link",
+						text: item.aweme_info.share_url,
 						hyperlink: item.aweme_info.share_url
 					},
 					followerCount: item.aweme_info.author.follower_count,
