@@ -5,7 +5,7 @@ function TiktokData() {
 	var ss = SpreadsheetApp.getActiveSpreadsheet();
 	var sheet = ss.getActiveSheet();
 
-	var token = PropertiesService.getScriptProperties().getProperty("API_TOKEN");
+	var token = getRequiredProperty("API_TOKEN");
 
 	if (!token) {
 		throw new Error("Script Properties에 API_TOKEN 값이 설정되어 있지 않습니다.");

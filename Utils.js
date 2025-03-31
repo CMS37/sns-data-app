@@ -2,9 +2,18 @@ function Log(message) {
 	Logger.log(message);
 }
 
-function getResultSheetName() {
+function getResultSheetName(sns) {
 	var now = new Date();
 	var formattedDate = Utilities.formatDate(now, Session.getScriptTimeZone(), "yyyy-MM-dd HHmmss");
 
-	return formattedDate + " Tiktok Data";
+	return formattedDate + " " + sns + " data";
+}
+
+function getRequiredProperty(key) {
+	var value = PropertiesService.getScriptProperties().getProperty(key);
+
+	if (!value)
+		throw new Error(`스크립트 속성에 '${key}'가 없습니다.`);
+
+	return value;
 }

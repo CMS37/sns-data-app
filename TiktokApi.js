@@ -66,37 +66,47 @@ function fetchAllKeywordData(tasks, period, sorting, matchExactly, token) {
   }
 
 function fetchAllUserData(tasks, token) {
-	var userRequests = [];
+	var secUidMap = {}; 
 
 	tasks.forEach(function(task, taskIndex) {
 		if (task.keywordResult && task.keywordResult.data && task.keywordResult.data.length > 0) {
 			task.keywordResult.data.forEach(function(post, postIndex) {
-			if (post.secUid) {
-				var userUrl = buildUserInfoUrl(post.secUid, token);
-				userRequests.push({ taskIndex: taskIndex, postIndex: postIndex, url: userUrl });
-			}
+				if (post.secUid) {
+					if (!secUidMap[post.secUid]) {
+						secUidMap[post.secUid] = [];
+					}
+					secUidMap[post.secUid].push({ taskIndex: taskIndex, postIndex: postIndex });
+				}
 			});
 		}
 	});
-	
-	if (userRequests.length === 0) {
-	  return tasks;
-	}
-	
-	Log("총 " + userRequests.length + "개의 유저 API 요청 시작");
 
-	var userUrls = userRequests.map(function(req) { return req.url; });
+	var uniqueSecUids = Object.keys(secUidMap);
+	if (uniqueSecUids.length === 0) {
+		return tasks;
+	}
+
+	Log("총 " + uniqueSecUids.length + "개의 유저 API 요청 시작");
+
+	var userUrls = uniqueSecUids.map(function(secUid) {
+		return buildUserInfoUrl(secUid, token);
+	});
+
 	var responses = UrlFetchApp.fetchAll(userUrls);
 
 	for (var i = 0; i < responses.length; i++) {
-		var req = userRequests[i];
+		var secUid = uniqueSecUids[i];
 		try {
 			var userJson = JSON.parse(responses[i].getContentText());
-			tasks[req.taskIndex].keywordResult.data[req.postIndex].userInfo = userJson;
+			secUidMap[secUid].forEach(function(ref) {
+				tasks[ref.taskIndex].keywordResult.data[ref.postIndex].userInfo = userJson;
+			});
 		} catch (e) {
-			tasks[req.taskIndex].keywordResult.data[req.postIndex].userInfo = { error: e.toString() };
+			secUidMap[secUid].forEach(function(ref) {
+				tasks[ref.taskIndex].keywordResult.data[ref.postIndex].userInfo = { error: e.toString() };
+			});
 		}
 	}
-	
+
 	return tasks;
 }

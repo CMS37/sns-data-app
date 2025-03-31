@@ -1,5 +1,5 @@
 function RecordToSheet(ss, tasks) {
-	var resultSheetName = getResultSheetName();
+	var resultSheetName = getResultSheetName("TikTok");
 	var resultSheet = ss.insertSheet(resultSheetName);
 	var headers = [
 	  "국가",
