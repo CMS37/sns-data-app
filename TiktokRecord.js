@@ -1,5 +1,5 @@
 function RecordToSheet(ss, tasks) {
-	var resultSheetName = new Date().toISOString().split("T")[0] + " Tiktok Data";
+	var resultSheetName = getResultSheetName();
 	var resultSheet = ss.insertSheet(resultSheetName);
 	var headers = [
 	  "국가",
