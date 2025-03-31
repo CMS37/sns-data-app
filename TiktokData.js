@@ -7,10 +7,6 @@ function TiktokData() {
 
 	var token = getRequiredProperty("API_TOKEN");
 
-	if (!token) {
-		throw new Error("Script Properties에 API_TOKEN 값이 설정되어 있지 않습니다.");
-	}
-
 	var period = sheet.getRange("C2").getValue();
 	var sorting = sheet.getRange("D2").getValue();
 	var matchExactly = sheet.getRange("E2").getValue();
@@ -20,23 +16,26 @@ function TiktokData() {
 		throw new Error("입력된 데이터가 없습니다.");
 	}
 
-	var data = sheet.getRange(2, 1, lastRow - 1, 2).getValues();
-	var tasks = [];
-	
-	data.forEach(function(row) {
-		var country = row[0];
-		var keyword = row[1];
-		if (country && keyword) {
-			tasks.push({ country: country, keyword: keyword });
-		}
+	var dataRange  = sheet.getRange(2, 1, lastRow - 1, 2).getValues();
+
+	var filteredData = dataRange.filter(function(row) {
+		return row[0] || row[1];
+	});
+
+	if (filteredData.length === 0) {
+		throw new Error("국가 또는 키워드가 입력된 유효한 행이 없습니다.");
+	}
+
+	var tasks = filteredData.map(function(row) {
+		return { country: row[0], keyword: row[1] };
 	});
 
 	return {
-		ss: ss,
-		tasks: tasks,
-		period: period,
-		sorting: sorting,
-		matchExactly: matchExactly,
-		token: token
+		token,
+		period,
+		sorting,
+		matchExactly,
+		tasks,
+		ss
 	};
 }
