@@ -8,9 +8,21 @@ function TiktokData() {
 	var token = getRequiredProperty("API_TOKEN");
 
 	var period = sheet.getRange("C2").getValue();
+
+	if (![0, 1, 7, 30, 90, 180].includes(period)) {
+		throw new Error("기간은 숫자여야 합니다 숫자들은 참고사항을 확인해 주세요. 현재 값: " + period);
+	}
+
 	var sorting = sheet.getRange("D2").getValue();
+	if (![0, 1].includes(sorting)) {
+		throw new Error("정렬은 0이거나 1이어야 합니다. 현재 값: " + sorting);
+	}
+
 	var matchExactly = sheet.getRange("E2").getValue();
-	
+	if (matchExactlyRaw !== "TRUE" && matchExactlyRaw !== "FALSE") {
+		throw new Error("정확도는 셀에 'TRUE' 또는 'FALSE'로 입력해주세요. 현재 값: " + matchExactlyRaw);
+	}
+
 	var lastRow = sheet.getLastRow();
 	if (lastRow < 2) {
 		throw new Error("입력된 데이터가 없습니다.");
