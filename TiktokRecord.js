@@ -25,8 +25,8 @@ function RecordToSheet(ss, tasks) {
 			task.keywordResult.data.forEach(function(post) {
 				var nickname = (post.aweme_info && post.aweme_info.author && post.aweme_info.author.nickname) || "";
 				var uniqueId = (post.aweme_info && post.aweme_info.author && post.aweme_info.author.unique_id) || "";
-				var tiktokHyperlink = uniqueId ? '=HYPERLINK("https://www.tiktok.com/@' + nickname + '", "' + uniqueId + '")' : nickname;
-				
+				var tiktokHyperlink = uniqueId ? '=HYPERLINK("https://www.tiktok.com/@' + uniqueId + '", "' + uniqueId + '")' : nickname;
+
 				var shareUrl = post.aweme_info.share_url;
 				var followerCount = post.aweme_info.author.follower_count;
 				var playCount = post.aweme_info.statistics.play_count;
@@ -34,7 +34,7 @@ function RecordToSheet(ss, tasks) {
 				var collectCount = post.aweme_info.statistics.collect_count;
 				var createTime = post.aweme_info.create_time ?
 					  new Date(post.aweme_info.create_time * 1000).toISOString().split("T")[0] : "";
-				
+
 				var userRegion = "";
 				var userBio = "";
 				var userInstagram = "";
