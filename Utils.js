@@ -17,3 +17,18 @@ function getRequiredProperty(key) {
 
 	return value;
 }
+
+function fetchAllInBatches(urls, batchSize, delay) {
+	var responses = [];
+
+	for (var i = 0; i < urls.length; i += batchSize) {
+		var batch = urls.slice(i, i + batchSize);
+
+		responses = responses.concat(UrlFetchApp.fetchAll(batch));
+
+		if (i + batchSize < urls.length) {
+		Utilities.sleep(delay);
+		}
+	}
+	return responses;
+}

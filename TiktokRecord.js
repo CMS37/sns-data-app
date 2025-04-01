@@ -4,7 +4,7 @@ function RecordToSheet(ss, tasks) {
 	var headers = [
 	  "국가",
 	  "키워드",
-	  "틱톡닉네임",
+	  "틱톡아이디",
 	  "게시물 링크",
 	  "팔로워수",
 	  "재생수",
@@ -25,7 +25,7 @@ function RecordToSheet(ss, tasks) {
 			task.keywordResult.data.forEach(function(post) {
 				var nickname = (post.aweme_info && post.aweme_info.author && post.aweme_info.author.nickname) || "";
 				var uniqueId = (post.aweme_info && post.aweme_info.author && post.aweme_info.author.unique_id) || "";
-				var tiktokHyperlink = uniqueId ? '=HYPERLINK("https://www.tiktok.com/@' + nickname + '", "' + nickname + '")' : nickname;
+				var tiktokHyperlink = uniqueId ? '=HYPERLINK("https://www.tiktok.com/@' + nickname + '", "' + uniqueId + '")' : nickname;
 				
 				var shareUrl = post.aweme_info.share_url;
 				var followerCount = post.aweme_info.author.follower_count;

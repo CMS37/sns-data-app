@@ -19,7 +19,7 @@ function TiktokData() {
 	}
 
 	var matchExactly = sheet.getRange("E2").getValue();
-	if (matchExactly !== "TRUE" && matchExactly !== "FALSE") {
+	if (matchExactly !== "true" && matchExactly !== "false") {
 		throw new Error("정확도는 셀에 'TRUE' 또는 'FALSE'로 입력해주세요. 현재 값: " + matchExactly);
 	}
 

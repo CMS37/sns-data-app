@@ -92,7 +92,7 @@ function fetchAllUserData(tasks, token) {
 		return buildUserInfoUrl(secUid, token);
 	});
 
-	var responses = UrlFetchApp.fetchAll(userUrls);
+	var responses = fetchAllInBatches(userUrls, 10, 1000);
 
 	for (var i = 0; i < responses.length; i++) {
 		var secUid = uniqueSecUids[i];
