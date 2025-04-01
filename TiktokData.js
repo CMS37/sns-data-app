@@ -19,8 +19,8 @@ function TiktokData() {
 	}
 
 	var matchExactly = sheet.getRange("E2").getValue();
-	if (matchExactlyRaw !== "TRUE" && matchExactlyRaw !== "FALSE") {
-		throw new Error("정확도는 셀에 'TRUE' 또는 'FALSE'로 입력해주세요. 현재 값: " + matchExactlyRaw);
+	if (matchExactly !== "TRUE" && matchExactly !== "FALSE") {
+		throw new Error("정확도는 셀에 'TRUE' 또는 'FALSE'로 입력해주세요. 현재 값: " + matchExactly);
 	}
 
 	var lastRow = sheet.getLastRow();
