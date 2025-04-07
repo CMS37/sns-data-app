@@ -74,8 +74,6 @@ const fetchAllUserData = (tasks, token) => {
   
 	responses.forEach((response, i) => {
 		const username  = uniqueUsernames[i];
-		const fullResponse = response.getContentText();
-		Log(`Full response for username ${username}: ${fullResponse}`);
 		try {
 			const userJson = JSON.parse(response.getContentText());
 			usernameMap[username].forEach(ref => {

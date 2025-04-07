@@ -18,18 +18,17 @@ const RecordToSheet = (ss, tasks) => {
 		"X",
 		"YouTube Channel"
 	];
-	resultSheet.appendRow(headers);
+	const allRows = [headers];
 
 	tasks.forEach(task => {
 		if (task.keywordResult?.data?.length) {
 			task.keywordResult.data.forEach(post => {
 				const { aweme_info } = post;
-				const nickname = aweme_info?.author?.nickname || "";
 				const uniqueId = aweme_info?.author?.unique_id || "";
 				const tiktokHyperlink = uniqueId
 					? `=HYPERLINK("https://www.tiktok.com/@${uniqueId}", "${uniqueId}")`
 					: "";
-
+		
 				const shareUrl = aweme_info?.share_url || "";
 				const followerCount = aweme_info?.author?.follower_count || "";
 				const playCount = aweme_info?.statistics?.play_count || "";
@@ -38,7 +37,7 @@ const RecordToSheet = (ss, tasks) => {
 				const createTime = aweme_info?.create_time
 					? new Date(aweme_info.create_time * 1000).toISOString().split("T")[0]
 					: "";
-
+	  
 				let userRegion = "",
 					userBio = "",
 					userInstagram = "",
@@ -54,6 +53,7 @@ const RecordToSheet = (ss, tasks) => {
 						youtube_channel_title = "",
 						bioLink = ""
 					} = post.userInfo.data.user;
+
 					if (Array.isArray(bioLink)) {
 						userbioLink = bioLink.map(item => item.link).join("\n");
 					} else if (typeof bioLink === "object" && bioLink !== null && bioLink.link) {
@@ -67,15 +67,15 @@ const RecordToSheet = (ss, tasks) => {
 					userX = twitter_name;
 					userYouTubeChannel = youtube_channel_title;
 				}
-
+	  
 				const instaHyperlink = userInstagram
 					? `=HYPERLINK("https://www.instagram.com/${userInstagram}", "${userInstagram}")`
 					: "";
 				const xHyperlink = userX
 					? `=HYPERLINK("https://x.com/${userX}", "${userX}")`
 					: "";
-
-				resultSheet.appendRow([
+	  
+				allRows.push([
 					task.country,
 					task.keyword,
 					tiktokHyperlink,
@@ -94,7 +94,9 @@ const RecordToSheet = (ss, tasks) => {
 				]);
 			});
 		} else {
-			resultSheet.appendRow([task.country, task.keyword, "데이터 없음"]);
+		  allRows.push([task.country, task.keyword, "데이터 없음"]);
 		}
 	});
+
+	resultSheet.getRange(1, 1, allRows.length, allRows[0].length).setValues(allRows);
 };
