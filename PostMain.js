@@ -32,7 +32,7 @@ const main = () => {
 			const parts = url.split("@");
 			if (parts.length > 1) {
 				let username = parts[1].trim();
-				if (username.indexOf("/" !== -1)) {
+				if (username.indexOf("/") !== -1) {
 					username = username.split("/")[0];
 				}
 				usernames.push({name: username});

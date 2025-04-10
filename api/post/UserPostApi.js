@@ -59,10 +59,8 @@ const fetchUserPosts = (usernames, reportSheet, tags) => {
 			}
 		  	userJson.data.forEach((post, index) => {
 				const Keywords = getCombinedKeywords(post, post.desc);
-				const matchFound = Keywords.some(tag => {
-					const cleanTag = tag.toLowerCase().replace(/^#/, "");
-					return tags.includes(cleanTag);
-				});
+				const matchFound = Keywords.some(tag => tags.includes(tag));
+
 				if (matchFound) {
 					const statistics = post.statistics || {};
 
@@ -79,7 +77,7 @@ const fetchUserPosts = (usernames, reportSheet, tags) => {
 					const country = post.region || " Error ";
 
 					const tagsJoined = Keywords.join(" | ");
-					Log(`일치하는 ${index + 1} 번쨰 게시글: ${pcUrl}`);
+					Log(`${uniqueId}의 게시물 중 일치하는 ${index + 1} 번쨰 게시글: ${pcUrl}`);
 					Log(`게시글 전체 태그: ${tagsJoined}`);
 
 					allRows.push([
