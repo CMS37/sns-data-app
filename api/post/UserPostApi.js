@@ -1,3 +1,28 @@
+const extractHashtags = (post) => {
+	const textExtra = post.text_extra || [];
+
+	return textExtra.map(item => item.hashtag_name)
+					.filter(Boolean)
+					.map(tag => tag.toLowerCase().replace(/^#/, ''));
+};
+
+const extractWordsFromDesc = (desc) => {
+	const cleanText = desc.replace(/#[^\s]+/g, '').toLowerCase();
+
+	return cleanText.split(/\s+/).filter(Boolean);
+};
+  
+const getCombinedKeywords = (post, desc) => {
+	const tagsFromExtra = extractHashtags(post);
+	const wordsFromDesc = extractWordsFromDesc(desc);
+
+	return Array.from(new Set([...tagsFromExtra, ...wordsFromDesc]));
+};
+
+const buildPcUrl = (uniqueId, awemeId) => {
+	return `https://www.tiktok.com/@${uniqueId}/video/${awemeId}`;
+};
+
 const buildUserPostUrl = (username, token) => {
 	const root = "https://ensembledata.com/apis";
 	const endpoint = "/tt/user/posts";
@@ -33,35 +58,35 @@ const fetchUserPosts = (usernames, reportSheet, tags) => {
 				return;
 			}
 		  	userJson.data.forEach((post, index) => {
-				const textExtra = post.text_extra || [];
-				const hashtags = textExtra.map(item => item.hashtag_name).filter(Boolean);
-				const matchFound = hashtags.some(tag => {
+				const Keywords = getCombinedKeywords(post, post.desc);
+				const matchFound = Keywords.some(tag => {
 					const cleanTag = tag.toLowerCase().replace(/^#/, "");
 					return tags.includes(cleanTag);
 				});
 				if (matchFound) {
-					const shareUrl = post.share_url || "링크없음";
-
 					const statistics = post.statistics || {};
+
+					const awemeId = post.aweme_id || " Error ";
+					const uniqueId = post.author.unique_id || " Error ";
+					const pcUrl = buildPcUrl(uniqueId, awemeId);
+
 					const playCount = statistics.play_count || 0;
 					const diggCount = statistics.digg_count || 0;
 					const collectCount = statistics.collect_count || 0;
 					const commentCount = statistics.comment_count || 0;
 
-					const uniqueId = post.author.unique_id || " Error ";
 					const followerCount = post.author.follower_count  || 0;
 					const country = post.region || " Error ";
 
-					const tagsJoined = hashtags.join(" | ");
-					Log(`일치하는 ${index + 1} 번쨰 게시글: ${shareUrl}`);
+					const tagsJoined = Keywords.join(" | ");
+					Log(`일치하는 ${index + 1} 번쨰 게시글: ${pcUrl}`);
 					Log(`게시글 전체 태그: ${tagsJoined}`);
-					Log(`조회수: ${playCount} 좋아요: ${diggCount} 저장수: ${collectCount}`);
 
 					allRows.push([
 						uniqueId,
 						country,
 						followerCount,
-						shareUrl,
+						pcUrl,
 						playCount,
 						commentCount,
 						diggCount,
@@ -70,7 +95,7 @@ const fetchUserPosts = (usernames, reportSheet, tags) => {
 				}
 			});
 		} catch (e) {
-		  Log(`유저 ${username} API 응답 오류: ${e.toString()}`);
+		  Log(`유저 ${username.name} API 응답 오류: ${e.toString()}`);
 		}
 	});
 	if (allRows.length > 0) {
