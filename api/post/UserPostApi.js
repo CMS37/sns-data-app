@@ -16,23 +16,20 @@ const buildUserPostUrl = (username, token) => {
 	return `${root}${endpoint}?${queryString}`;
 }
 
-const fetchUserPosts = (usernames, reportSheet) => {
+const fetchUserPosts = (usernames, reportSheet, tags) => {
 	const token = getRequiredProperty("API_TOKEN");
 
 	const urls = usernames.map(user => buildUserPostUrl(user.name, token));
-	urls.forEach((url, i) => {
-		Log(`유저 ${usernames[i]} API 요청 URL: ${url}`);
-	});
 	const responses = fetchAllInBatches(urls, 100, 500);
 
-	const DESIRED_TAGS = ["vtcosmetics", "reedleshot", "lipplumper", "microneedling"]; // 추후 시트에서 배열로 가져오기
+	const allRows = [];
 
 	responses.forEach((response, i) => {
 		const username = usernames[i];
 		try {
 			const userJson = JSON.parse(response.getContentText());
 			if (!userJson.data || !Array.isArray(userJson.data)) {
-				Log(`유저 ${username}의 데이터가 없습니다.`);
+				Log(`유저의 데이터가 없습니다: ${username.name}`);
 				return;
 			}
 		  	userJson.data.forEach((post, index) => {
@@ -40,22 +37,45 @@ const fetchUserPosts = (usernames, reportSheet) => {
 				const hashtags = textExtra.map(item => item.hashtag_name).filter(Boolean);
 				const matchFound = hashtags.some(tag => {
 					const cleanTag = tag.toLowerCase().replace(/^#/, "");
-					return DESIRED_TAGS.includes(cleanTag);
+					return tags.includes(cleanTag);
 				});
 				if (matchFound) {
-					const shareUrl = post.share_url || " Error ";
-					const tagsJoined = hashtags.join(" + ");
-					const playCount = post.statistics.play_count || 0;
-					const diggCount = post.statistics.digg_count || 0;
-					const collectCount = post.statistics.collect_count || 0;
-					Log(`${index + 1} 번쨰 게시글 링크: ${shareUrl}`);
-					Log(`게시글 태그: ${tagsJoined}`);
+					const shareUrl = post.share_url || "링크없음";
+
+					const statistics = post.statistics || {};
+					const playCount = statistics.play_count || 0;
+					const diggCount = statistics.digg_count || 0;
+					const collectCount = statistics.collect_count || 0;
+					const commentCount = statistics.comment_count || 0;
+
+					const uniqueId = post.author.unique_id || " Error ";
+					const followerCount = post.author.follower_count  || 0;
+					const country = post.region || " Error ";
+
+					const tagsJoined = hashtags.join(" | ");
+					Log(`일치하는 ${index + 1} 번쨰 게시글: ${shareUrl}`);
+					Log(`게시글 전체 태그: ${tagsJoined}`);
 					Log(`조회수: ${playCount} 좋아요: ${diggCount} 저장수: ${collectCount}`);
-					reportSheet.appendRow([shareUrl, playCount, diggCount, collectCount]);
+
+					allRows.push([
+						uniqueId,
+						country,
+						followerCount,
+						shareUrl,
+						playCount,
+						commentCount,
+						diggCount,
+						collectCount,
+					]);
 				}
 			});
 		} catch (e) {
 		  Log(`유저 ${username} API 응답 오류: ${e.toString()}`);
 		}
-	  });
+	});
+	if (allRows.length > 0) {
+		const startRow = reportSheet.getLastRow() + 1;
+		reportSheet.getRange(startRow, 1, allRows.length, allRows[0].length).setValues(allRows);
+	}
+
 }
