@@ -1,15 +1,24 @@
-const updateSheetWithPostData = (sheet, tasks, originalUrls) => {
+const updateInsPostInfoData = (sheet, tasks, originalUrls) => {
 	const allRows = tasks.map((task, index) => {
-	  return [
-		originalUrls[index],
-		task.shortcode,
-		task.viewCount,
-		task.likeCount,
-		task.commentCount,
-		task.savedCount
-	  ];
+		if (task.error) {
+			return [
+				originalUrls[index],
+				task.error,
+				0,
+				0,
+				0
+			];
+		}
+		return [
+			originalUrls[index],
+			task.viewCount,
+			task.likeCount,
+			task.commentCount,
+			task.savedCount
+	  	];
 	});
-	sheet.getRange(2, 1, allRows.length, 6).setValues(allRows);
+
+	sheet.getRange(2, 1, allRows.length, 5).setValues(allRows);
 };
 
 const InsMain = () => {
@@ -33,5 +42,3 @@ const InsMain = () => {
 		throw new Error("메인 에러: " + error.toString());
 	}
 };
-
-  
