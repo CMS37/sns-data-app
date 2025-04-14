@@ -1,8 +1,7 @@
 const extractShortcode = (url) => {
-	const match = url.match(/\/p\/([^\/?]+)/);
+	const match = url.match(/\/(?:p|reel)\/([^\/?]+)/);
 	return match ? match[1] : "";
 }
-
 
 const postData = () => {
 	Log("시트 데이터 수집 시작");
