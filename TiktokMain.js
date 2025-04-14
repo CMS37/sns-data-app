@@ -21,6 +21,7 @@ const mainProcess = () => {
 	  Log("메인 종료");
 	} catch (error) {
 	  Log("메인 에러: " + error.toString());
+	  throw new Error("메인 에러: " + error.toString());
 	}
 };
   
