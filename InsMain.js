@@ -6,15 +6,16 @@ const updateInsPostInfoData = (sheet, tasks, originalUrls) => {
 				task.error,
 				0,
 				0,
+				0,
 				0
 			];
 		}
 		return [
 			originalUrls[index],
 			task.viewCount,
+			task.playCount,
 			task.likeCount,
 			task.commentCount,
-			task.savedCount
 	  	];
 	});
 
